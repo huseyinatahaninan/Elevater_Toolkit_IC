@@ -1,5 +1,5 @@
 from collections import OrderedDict
-from socket import IP_DEFAULT_MULTICAST_LOOP
+#from socket import IP_DEFAULT_MULTICAST_LOOP
 from typing import Tuple, Union, List
 import timm
 import torch
