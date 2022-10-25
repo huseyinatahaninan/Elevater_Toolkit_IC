@@ -235,22 +235,24 @@ def train_task(train_dataloader, test_dataloader, config, sweep_run=False):
 
     train_dataloader = clone_loader(train_dataloader)
 
-    gpu = config.GPUS
+    # gpu = config.GPUS
 
-    if len(gpu) == 1:
-        torch.cuda.set_device(gpu[0])
-        model = model.cuda(gpu[0])
+    # if len(gpu) == 1:
+    #     torch.cuda.set_device(gpu[0])
+    #     model = model.cuda(gpu[0])
 
     # define loss function (criterion) and optimizer
     if config.DATASET.DATASET in MULTILABEL_DATASETS:
-        criterion = torch.nn.BCEWithLogitsLoss().cuda(gpu)
+        criterion = torch.nn.BCEWithLogitsLoss()
+        #criterion = torch.nn.BCEWithLogitsLoss().cuda(gpu)
     else:
-        criterion = torch.nn.CrossEntropyLoss().cuda(gpu)
+        criterion = torch.nn.CrossEntropyLoss()
+        #criterion = torch.nn.CrossEntropyLoss().cuda(gpu)
 
     optimizer = build_optimizer(config, model)
 
-    cudnn.benchmark = config.CUDNN.BENCHMARK
-    cudnn.deterministic = config.CUDNN.DETERMINISTIC
+    # cudnn.benchmark = config.CUDNN.BENCHMARK
+    # cudnn.deterministic = config.CUDNN.DETERMINISTIC
 
     # Generate model statistics
     model_info = {}
@@ -281,7 +283,7 @@ def train_task(train_dataloader, test_dataloader, config, sweep_run=False):
         return acc1
 
     del model, criterion, optimizer
-    gpu_gc()
+    #gpu_gc()
 
     if sweep_run:
         return best_acc1
@@ -310,12 +312,12 @@ def train_one(train_loader, model, criterion, optimizer, epoch, config):
         # measure data loading time
         data_time.update(time.time() - end)
 
-        if len(config.GPUS) == 1:
-            images = images.cuda(config.GPUS[0], non_blocking=True)
+        # if len(config.GPUS) == 1:
+        #     images = images.cuda(config.GPUS[0], non_blocking=True)
 
         if images.shape[0] == 1: continue # TODO: check this fix on batch left is size-1
         if target.shape[-1] == 1: target = target[:,0]
-        target = target.cuda(config.GPUS[0], non_blocking=True)
+        # target = target.cuda(config.GPUS[0], non_blocking=True)
 
         # compute gradient and do SGD step
         optimizer.zero_grad()
@@ -363,9 +365,9 @@ def validate(val_loader, model, criterion, epoch, config, return_logits=False):
     for batch in val_loader:
         images, target = batch[:2]
 
-        if len(config.GPUS) == 1:
-            images = images.cuda(config.GPUS[0], non_blocking=True)
-        target = target.cuda(config.GPUS[0], non_blocking=True)
+        # if len(config.GPUS) == 1:
+        #     images = images.cuda(config.GPUS[0], non_blocking=True)
+        # target = target.cuda(config.GPUS[0], non_blocking=True)
         if target.shape[-1] == 1: target = target[:,0]
 
         # compute output
