@@ -35,7 +35,9 @@ search:
       - python vision_benchmark/commands/finetune.py
         --ds ./vision_benchmark/resources/datasets/{dataset}
         --model ./vision_benchmark/resources/model/{model}
-        --no-tuning False
+        --no-tuning True
+        --lr 1e-5
+        --l2 1e-6
         MODEL.CLIP_FP32 True
         DATASET.NUM_SAMPLES_PER_CLASS -1
         DATASET.ROOT /mnt/input_path/elevater/datasets
