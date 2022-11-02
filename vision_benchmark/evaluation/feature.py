@@ -594,7 +594,7 @@ def construct_dataloader(config, feature_type="image", test_split_only=False):
                 train_set = train_set.sample_few_shot_subset(num_samples_per_class, random_seed)
                 
             val_split=0.2
-            train_dataloader, val_dataloader = get_dataloader(TorchDataset( ManifestDataset(train_set_dataset_info, train_set), transform=transform_clip), val_split=val_split)
+            train_dataloader, val_dataloader = get_dataloader(TorchDataset( ManifestDataset(train_set_dataset_info, train_set), transform=transform_clip), val_split=val_split, batch_size_per_gpu=config.TRAIN.BATCH_SIZE_PER_GPU)
             logging.info(f'Val split from Train set: Train size is {len(train_set.images)*(1-val_split)}, and validation size is {len(train_set.images)*val_split}.')
     else:
         if not test_split_only:
