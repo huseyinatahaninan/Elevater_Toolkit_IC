@@ -28,6 +28,7 @@ MULTILABEL_DATASETS = {"chestx-ray8"}
 def add_linear_probing_args(parser):
     parser.add_argument('--ds', required=False, help='Evaluation dataset configure file name.', type=str)
     parser.add_argument('--model', required=True, help='Evaluation model configure file name', type=str)
+    parser.add_argument('--model_dir', required=True, help='Model location', type=str)
     parser.add_argument('--submit-predictions', help='submit predictions and model info to leaderboard.', default=False, action='store_true')
     parser.add_argument('--submit-by', help='Person who submits the results.', type=str)
 
@@ -109,6 +110,7 @@ def main():
 
     # Run linear probe
     config.defrost()
+    config.TRAIN.model_dir = args.model_dir
     config.TRAIN.BATCH_SIZE_PER_GPU = args.batch_size
     config.TRAIN.GRAD_ACC = args.grad_acc
     config.TRAIN.END_EPOCH = args.epoch

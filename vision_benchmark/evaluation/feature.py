@@ -301,7 +301,7 @@ def get_model(config, feature_type='image'):
         else:
             import clip
         if model_name in clip.available_models():
-            model, _ = clip.load(model_name, jit=False)
+            model, _ = clip.load(model_name, jit=False, download_root=config.TRAIN.model_dir)
             if feature_type == 'image':
                 model.forward = model.encode_image
             elif feature_type == 'text':

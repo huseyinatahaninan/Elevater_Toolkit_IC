@@ -1,4 +1,4 @@
-description: elevater-linear_probe-DP
+description: elevater-linear_probe-debug-DP
 
 target:
   service: amlk8s
@@ -30,7 +30,7 @@ storage:
 
 search:
   job_template:
-    name: linear_probe_dp_{experiment_name:s}_{auto:4s}
+    name: debug_linear_probe_dp_{experiment_name:s}_{auto:4s}
     sku: 32G16-V100
     command:
       - python vision_benchmark/commands/linear_probe_dp.py
@@ -42,6 +42,7 @@ search:
         --l2 {wd}
         --batch_size {batch_size}
         --epoch {epoch}
+        --max_grad_norm 0.1
         MODEL.CLIP_FP32 True
         DATASET.NUM_SAMPLES_PER_CLASS {num_shots}
         DATASET.ROOT /mnt/input_path/elevater/datasets
@@ -61,7 +62,7 @@ search:
   max_trials: 1
   params:
     - name: dataset
-      values: choice("mnist.yaml")
+      values: choice("rendered-sst2.yaml")
     - name: model
       values: choice("vitb16_CLIP.yaml")
     - name: lr
@@ -69,9 +70,9 @@ search:
     - name: wd
       values: choice(0.0)
     - name: batch_size
-      values: choice(1024)
+      values: choice(64)
     - name: epoch
-      values: choice(100)
+      values: choice(5)
     - name: num_shots
       values: choice(-1)
     - name: merge_encoder_and_head_proj
