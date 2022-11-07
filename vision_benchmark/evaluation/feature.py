@@ -91,7 +91,7 @@ def create_dataloader(dataset, batch_size, shuffle=True, num_workers=6, pin_memo
         num_workers=num_workers,
         pin_memory=pin_memory,
         sampler=None,
-        drop_last=False,
+        drop_last=True,
         worker_init_fn=seed_worker,
         generator=generator if shuffle else None,
     )
