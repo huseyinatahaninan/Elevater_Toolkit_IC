@@ -41,6 +41,7 @@ search:
         --lr {lr}
         --l2 {wd}
         --batch_size {batch_size}
+        --grad_acc {grad_acc}
         --epoch {epoch}
         MODEL.CLIP_FP32 True
         DATASET.NUM_SAMPLES_PER_CLASS {num_shots}
@@ -61,7 +62,7 @@ search:
   max_trials: 1
   params:
     - name: dataset
-      values: choice("hateful-memes.yaml")
+      values: choice("caltech101.yaml")
     - name: model
       values: choice("vitb16_CLIP.yaml")
     - name: lr
@@ -69,9 +70,11 @@ search:
     - name: wd
       values: choice(0.0)
     - name: batch_size
-      values: choice(2048)
+      values: choice(306)
+    - name: grad_acc
+      values: choice(1)
     - name: epoch
-      values: choice(100)
+      values: choice(50)
     - name: num_shots
       values: choice(-1)
     - name: merge_encoder_and_head_proj
