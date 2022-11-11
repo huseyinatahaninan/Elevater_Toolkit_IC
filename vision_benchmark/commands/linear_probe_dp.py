@@ -33,7 +33,7 @@ def add_linear_probing_args(parser):
 
     parser.add_argument('--no-tuning', help='No hyperparameter-tuning.', default=False, type=lambda x:x.lower()=="true")
     parser.add_argument('--emulate-zeroshot', help='Emulate zero shot learning.', default=False, type=str)
-    parser.add_argument('--batch_size', help='Batch size', default=16, type=int)
+    parser.add_argument('--batch_size', help='Batch size', default=10, type=int)
     parser.add_argument('--grad_acc', help='Gradient accumulation steps', default=1, type=int)
     parser.add_argument('--epoch', help='Number of epochs', default=10, type=int)
     parser.add_argument('--target_epsilon', help='Target epsilon', default=8, type=float)
@@ -115,6 +115,7 @@ def main():
     config.TRAIN.EXTRA_FINAL_TRAIN_EPOCH = 0
     config.TRAIN.TARGET_EPSILON = args.target_epsilon
     config.TRAIN.MAX_GRAD_NORM = args.max_grad_norm
+    config.TRAIN.USE_CHANNEL_BN = False  # Disable channel batch normalization due to privacy
     config.freeze()
     train_dataloader, val_dataloader, test_dataloader = construct_dataloader(config)
 

@@ -235,6 +235,7 @@ def train_task(train_dataloader, test_dataloader, config, sweep_run=False):
 
     from opacus import PrivacyEngine
 
+    logging.info(f"Batch size per GPU: {config.TRAIN.BATCH_SIZE_PER_GPU}, gradient accumulation: {config.TRAIN.GRAD_ACC}, dataset size: {len(train_dataloader.dataset)}")
     privacy_engine = PrivacyEngine(
         module=model,
         sample_rate=config.TRAIN.BATCH_SIZE_PER_GPU * config.TRAIN.GRAD_ACC / len(train_dataloader.dataset),
@@ -341,7 +342,7 @@ def train_one(train_loader, model, criterion, optimizer, epoch, config):
         # if config.TRAIN.CLIP_GRAD_NORM > 0:
         #     grad_norm = torch.nn.utils.clip_grad_norm_(model.parameters(), config.TRAIN.CLIP_GRAD_NORM)
 
-        if (step + 1) % config.TRAIN.GRAD_ACC == 0 or step == len(train_loader) - 1:
+        if (step + 1) % config.TRAIN.GRAD_ACC == 0:
             optimizer.step()
             optimizer.zero_grad()
         else:
