@@ -62,7 +62,7 @@ search:
   max_trials: 1
   params:
     - name: dataset
-      values: choice("caltech101.yaml")
+      values: choice("mnist.yaml")
     - name: model
       values: choice("vitb16_CLIP.yaml")
     - name: lr
@@ -70,11 +70,11 @@ search:
     - name: wd
       values: choice(0.0)
     - name: batch_size
-      values: choice(306)
+      values: choice(1024)
     - name: grad_acc
       values: choice(1)
     - name: epoch
-      values: choice(50)
+      values: choice(10)
     - name: num_shots
       values: choice(-1)
     - name: merge_encoder_and_head_proj

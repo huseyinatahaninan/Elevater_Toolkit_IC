@@ -117,6 +117,7 @@ def main():
     config.TRAIN.EXTRA_FINAL_TRAIN_EPOCH = 0
     config.TRAIN.TARGET_EPSILON = args.target_epsilon
     config.TRAIN.MAX_GRAD_NORM = args.max_grad_norm
+    config.TRAIN.USE_CHANNEL_BN = False  # Disable channel batch normalization due to privacy
     config.freeze()
     train_dataloader, val_dataloader, test_dataloader = construct_dataloader(config)
 

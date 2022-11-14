@@ -143,7 +143,7 @@ class Classifier(torch.nn.Module):
         self.normalize_visual_output = config.TRAIN.NORMALIZE_VISUAL_FEATURE
 
         if not config.TRAIN.USE_CHANNEL_BN:
-            self.channel_bn = nn.Identity()
+            self.channel_bn = torch.nn.LayerNorm(input_dim)
 
     def forward(self, img):
         pdtype = img.dtype
