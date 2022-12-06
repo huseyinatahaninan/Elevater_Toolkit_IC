@@ -1,0 +1,81 @@
+description: elevater-linear_probe-DP
+
+target:
+  service: amlk8s
+  name: itphyperdgx2cl1
+  vc: hai7a
+
+environment:
+  registry: mcr.microsoft.com
+  image: azureml/openmpi4.1.0-cuda11.1-cudnn8-ubuntu18.04:latest
+  conda_yaml_file: $CONFIG_DIR/environment.yml # requires amlt>=8.2.1.post1
+  setup:
+    - pip install git+https://github.com/openai/CLIP.git
+    - pip install git+https://github.com/haotian-liu/CLIP_vlp.git
+    - pip install opacus==0.15.0
+    - pip install -e .
+    
+code:
+  local_dir: $CONFIG_DIR/../..
+
+storage:
+  input_path:
+    # You should use your own blob here
+    storage_account_name: huinan
+    container_name: amulet
+  output_path:
+    # You should use your own blob here
+    storage_account_name: huinan
+    container_name: amulet
+
+search:
+  job_template:
+    name: linear_probe_dp_{experiment_name:s}_{auto:4s}
+    sku: 32G16-V100
+    command:
+      - python vision_benchmark/commands/linear_probe_dp.py
+        --ds ./vision_benchmark/resources/datasets/{dataset}
+        --model ./vision_benchmark/resources/model/{model}
+        --model_dir /mnt/input_path/elevater/clip
+        --no-tuning True
+        --lr {lr}
+        --l2 {wd}
+        --batch_size {batch_size}
+        --grad_acc {grad_acc}
+        --epoch {epoch}
+        MODEL.CLIP_FP32 True
+        DATASET.NUM_SAMPLES_PER_CLASS {num_shots}
+        DATASET.ROOT /mnt/input_path/elevater/datasets
+        OUTPUT_DIR /mnt/output_path/elevater/vitb16_CLIP/log
+        DATASET.RANDOM_SEED_SAMPLING 0
+        TRAIN.FREEZE_IMAGE_BACKBONE True
+        TRAIN.INIT_HEAD_WITH_TEXT_ENCODER True
+        TRAIN.MERGE_ENCODER_AND_HEAD_PROJ {merge_encoder_and_head_proj}
+        KNOWLEDGE.WORDNET.USE_HIERARCHY False
+        KNOWLEDGE.WORDNET.USE_DEFINITION False
+        KNOWLEDGE.WIKITIONARY.USE_DEFINITION False
+        KNOWLEDGE.GPT3.USE_GPT3 False
+        KNOWLEDGE.AGGREGATION.NUM_GPT3_ITEMS 0
+        TEST.MODEL_FILE "."
+        $EXTRA_ARGS
+  type: grid
+  max_trials: 1
+  params:
+    - name: dataset
+      values: choice("country211.yaml")
+    - name: model
+      values: choice("vitb16_CLIP.yaml")
+    - name: lr
+      values: choice(5)
+    - name: wd
+      values: choice(0.0)
+    - name: batch_size
+      values: choice(1055)
+    - name: grad_acc
+      values: choice(3)
+    - name: epoch
+      values: choice(50)
+    - name: num_shots
+      values: choice(-1)
+    - name: merge_encoder_and_head_proj
+      values: choice(False)
